@@ -16,11 +16,6 @@
     ],
     "license": "MIT",
     "homepage": "https://github.com/doldmechatronik/DoldMechatronikScreen",
-    "dependencies": {
-        "arduino-libraries/Arduino_GigaDisplay": "^1.0.1",
-        "arduino-libraries/arduino-libraries/Arduino_GigaDisplayTouch": "^1.0.1",
-        "lvgl/lvgl": "8.3.11"
-    },
     "frameworks": "arduino",
     "platforms": "*",
     "headers": "GigaDisplayScreensaver.h"
