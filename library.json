@@ -1,0 +1,27 @@
+{
+    "name": "GigaDisplayScreensaver",
+    "version": "1.0.0",
+    "description": "Screensaver for Giga R1 using LVGL",
+    "keywords": "screensaver, display, giga, lvgl",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/doldmechatronik/DoldMechatronikScreen.git"
+    },
+    "authors": [
+        {
+            "name": "Dold Mechatronik",
+            "email": "info@dold-mechatronik.de",
+            "url": "https://www.dold-mechatronik.de"
+        }
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/doldmechatronik/DoldMechatronikScreen",
+    "dependencies": {
+        "arduino-libraries/Arduino_GigaDisplay": "^1.0.1",
+        "arduino-libraries/arduino-libraries/Arduino_GigaDisplayTouch": "^1.0.1",
+        "lvgl/lvgl": "8.3.11"
+    },
+    "frameworks": "*",
+    "platforms": "*",
+    "headers": "GigaDisplayScreensaver.h"
+}
