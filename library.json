@@ -1,6 +1,6 @@
 {
     "name": "GigaDisplayScreensaver",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Screensaver for Giga R1 using LVGL",
     "keywords": "screensaver, display, giga, lvgl",
     "repository": {
