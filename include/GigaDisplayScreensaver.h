@@ -14,43 +14,41 @@ public:
 
         _duration = duration;
 
-        _thread.start(mbed::callback(this, &GigaDisplayScreensaver::loop));
+        _queue = mbed::mbed_event_queue();
+        _queue->call_in(100ms, mbed::callback(this, &GigaDisplayScreensaver::tick));
 
         _points = new GDTpoint_t[5];
     }
 
 private:
-    void loop()
+    void tick()
     {
-        while (true)
+        uint8_t contacts = _touchDetector->getTouchPoints(_points);
+
+        uint64_t millisNow = millis();
+
+        if (contacts > 0)
         {
-            uint8_t contacts = _touchDetector->getTouchPoints(_points);
-
-            uint64_t millisNow = millis();
-
-            if (contacts > 0)
-            {
-                _lastTouchMillis = millisNow;
-            }
-
-            if (millisNow - _lastTouchMillis > _duration)
-            {
-                if (_displayOn)
-                {
-                    _backlight.set(0);
-
-                    _displayOn = false;
-                }
-            }
-            else if (!_displayOn)
-            {
-                _backlight.set(100);
-
-                _displayOn = true;
-            }
-
-            rtos::ThisThread::sleep_for(100ms);
+            _lastTouchMillis = millisNow;
         }
+
+        if (millisNow - _lastTouchMillis > _duration)
+        {
+            if (_displayOn)
+            {
+                _backlight.set(0);
+
+                _displayOn = false;
+            }
+        }
+        else if (!_displayOn)
+        {
+            _backlight.set(100);
+
+            _displayOn = true;
+        }
+
+        _queue->call_in(100ms, mbed::callback(this, &GigaDisplayScreensaver::tick));
     }
 
     GigaDisplayBacklight _backlight;
@@ -58,7 +56,7 @@ private:
 
     uint64_t _duration;
 
-    rtos::Thread _thread;
+    events::EventQueue* _queue;
 
     GDTpoint_t* _points;
 
