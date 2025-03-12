@@ -2,7 +2,7 @@
 
 #include <Arduino_GigaDisplay.h>
 #include <Arduino_GigaDisplayTouch.h>
-#include <mbed_shared_queues.h>
+#include <rtos.h>
 
 class GigaDisplayScreensaver
 {
@@ -14,38 +14,42 @@ public:
 
         _duration = duration;
 
-        _queue = mbed::mbed_event_queue();
-        _queue->call_every(100ms, mbed::callback(this, &GigaDisplayScreensaver::tick));
+        _thread.start(mbed::callback(this, &GigaDisplayScreensaver::loop));
 
         _points = new GDTpoint_t[5];
     }
 
 private:
-    void tick()
+    void loop()
     {
-        uint8_t contacts = _touchDetector->getTouchPoints(_points);
-
-        uint64_t millisNow = millis();
-
-        if (contacts > 0)
+        while (true)
         {
-            _lastTouchMillis = millisNow;
-        }
+            uint8_t contacts = _touchDetector->getTouchPoints(_points);
 
-        if (millisNow - _lastTouchMillis > _duration)
-        {
-            if (_displayOn)
+            uint64_t millisNow = millis();
+
+            if (contacts > 0)
             {
-                _backlight.set(0);
-
-                _displayOn = false;
+                _lastTouchMillis = millisNow;
             }
-        }
-        else if (!_displayOn)
-        {
-            _backlight.set(100);
 
-            _displayOn = true;
+            if (millisNow - _lastTouchMillis > _duration)
+            {
+                if (_displayOn)
+                {
+                    _backlight.set(0);
+
+                    _displayOn = false;
+                }
+            }
+            else if (!_displayOn)
+            {
+                _backlight.set(100);
+
+                _displayOn = true;
+            }
+
+            rtos::ThisThread::sleep_for(100ms);
         }
     }
 
@@ -54,7 +58,7 @@ private:
 
     uint64_t _duration;
 
-    events::EventQueue* _queue;
+    rtos::Thread _thread;
 
     GDTpoint_t* _points;
 
